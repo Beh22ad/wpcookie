@@ -27,8 +27,8 @@ This tutorial teaches you how to add a custom preloader animation to your WordPr
 // WordPress Preloader by Redpishi.com
 
 add_action( 'init', 'Redpishi_Preloader' );
-function Redpishi_Preloader() { 
-    if(!is_admin() &&  $GLOBALS["pagenow"] !== "wp-login.php" ) { 
+function Redpishi_Preloader() {
+    if(!is_admin() &&  $GLOBALS["pagenow"] !== "wp-login.php" ) {
 
         $delay = 1;	// seconds
         $loader = 'https://redpishi.com/wp-content/uploads/2022/06/preloader3.svg'; // <-- REPLACE WITH YOUR SVG URL
@@ -53,7 +53,7 @@ function Redpishi_Preloader() {
         document.body.style.overflow = "hidden";
         document.addEventListener("DOMContentLoaded", () => setTimeout( function() { document.querySelector("div.Preloader").remove(); document.body.style.overflow = "visible"; } , '.$delay.' * 1000));
         </script>
-    '; 
+    ';
     }
 }
 ```
@@ -101,5 +101,3 @@ Yes. To do this, you would need to modify the conditional logic in the code. Ins
 - **CSS/JS conflict:** If the preloader causes layout issues after disappearing, check your theme's CSS for conflicts with the `overflow: hidden` style.
 - **Not working on certain pages:** Ensure the preloader code is correctly added to the `functions.php` and that the `init` hook is not being overridden by other plugins or themes.
 ```
-
-You can copy this entire block and paste it directly into your `README.md` file. The code now includes a note about using local SVG files, but remember that for a WordPress site, these files must be uploaded to the server and referenced by their URL.
