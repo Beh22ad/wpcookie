@@ -1,0 +1,8 @@
+<script id="red-ajax-pagination" >
+
+var posts_wrapper = "";   // The selector that wraps all of the posts/products.
+var post_wrapper = 	"";  // The selector of an individual post/product.
+var pagination_wrapper = ""; // The selector of the post/product navigation.
+var next_page_selector = ""; // The selector of the navigation next link.
+
+</script>
