@@ -1,0 +1,17 @@
+add_filter( 'woocommerce_product_tabs', 'product_tab' );
+function product_tab( $tabs ) {	
+	$tabs_title = "New Tab";
+
+	$tabs['FAQ'] = array(
+		'title' 	=> __( $tabs_title, 'woocommerce' ),
+		'priority' 	=> 20,
+		'callback' 	=> 
+'product_tab_content'
+	);
+	return $tabs;
+}
+function product_tab_content() { ?>
+ 
+<!-- Write the tab content here -->
+
+<?php }

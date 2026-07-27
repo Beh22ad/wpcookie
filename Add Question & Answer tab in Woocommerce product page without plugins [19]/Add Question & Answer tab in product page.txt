@@ -1,0 +1,75 @@
+add_filter( 'woocommerce_product_tabs', 'Questions_Answers' );
+function Questions_Answers( $tabs ) {	
+	$tabs_title = "Questions & Answers";
+
+	$tabs['Questions_Answers'] = array(
+		'title' 	=> __( $tabs_title, 'woocommerce' ),
+		'priority' 	=> 20,
+		'callback' 	=> 
+'Questions_Answers_tab_content'
+	);
+	return $tabs;
+}
+function Questions_Answers_tab_content() { 
+$QA_raw = (get_post_meta(get_the_ID(), 'qa', false));
+if ($QA_raw){	
+foreach ($QA_raw as $key => $value) {	?>
+	<details>
+	  <summary><?= explode("\n",$value)[0]; ?></summary>
+	 <?php echo join(" ",array_slice(explode("\n",$value),1));	 ?>
+	</details>			
+<?php } } ?>
+<style>
+:root {
+  --details-main: #ebeae9;  
+}
+
+details p {
+    color: #414141;
+}
+
+details {
+  margin: 1.3rem 0;
+  border-bottom: 2px solid var(--details-main)  ;
+  padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+  transition: max-height 1s ease;
+  overflow: hidden;
+}
+
+details[open] {
+  max-height: 50rem;
+  border: 2px solid var(--details-main)  ;
+  
+}
+
+details summary {
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+  margin: -0.3em -0.5em 0;
+  padding: 0.5em;
+}
+
+details[open] summary {
+  border-bottom: 1px solid var(--details-main)  ;
+  margin-bottom: 0.8em;
+  background-color: var(--details-main)  ;
+}
+
+details:not([open])
+{max-height: 5rem;}
+</style>
+
+<details>
+  <summary>Question 1</summary>
+  Answer 1 
+</details>
+
+<details>
+  <summary>Question 2</summary>
+  Answer 2 
+</details>
+
+<?php
+  }
