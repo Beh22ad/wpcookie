@@ -1,0 +1,7 @@
+[redtable class='table1' pagination='5' filter='on']
+
+
+// simple table without pagination and search bar.
+[redtable class='table1' pagination='off' filter='off']
+
+

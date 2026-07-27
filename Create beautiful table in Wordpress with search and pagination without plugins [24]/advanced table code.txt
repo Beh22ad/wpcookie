@@ -1,0 +1,154 @@
+/*
+* advanced table by redpishi.com 
+* [redtable class='table1' pagination='5' filter='on']
+*/
+add_shortcode( 'redtable', 'redtable_func' );
+function redtable_func( $atts ) {
+    $atts = shortcode_atts( array(
+        'pagination' => 'off', 
+		'class' => 'table',	
+        'filter' => 'on',		
+    ), $atts, 'redtable' );
+static $redtable_first_call = 1;
+$class = $atts["class"];
+$pagination = $atts["pagination"];
+$filter = $atts["filter"];
+$const_style = '
+<style>
+table.redpishi-com-table { color: #333; font-size: 1em; line-height: 1.5em; border-collapse: separate; border-spacing: 0; width: 90%; max-width: 1000px; margin: 30px auto 30px auto;box-shadow: 0 4px 8px 0 rgba(0,0,0,.16);border-radius: 2px; } 
+table.redpishi-com-table td {height: 3rem; padding:  15px 15px; border: none;}
+table.redpishi-com-table tr:nth-child(even){background-color: #f2f2f2;}
+table.redpishi-com-table tr:hover:not(th) {background-color: rgba(237,28,64,.1);}
+table.redpishi-com-table th,table.redpishi-com-table tr.table-head td, table.redpishi-com-table th:hover, table.redpishi-com-table tr.table-head td:hover {
+background: #ed1c40; color: #fff; height: 3rem; padding:  15px 15px;text-align: left; } 
+a.btn_prev, a.btn_next { transition: all .3s; background-color: #ed1c40; text-decoration: none; border-radius: 50%; font-size: 16px; margin-right: 10px; color: #ffffff; cursor: pointer; user-select: none; height: 32px; width: 32px; display: flex; align-content: center; justify-content: center; align-items: center;}
+a.btn_prev:hover, a.btn_next:hover {box-shadow: 0px 2px 5px #ed1c40cc;}
+div.redpishi-com-table-pag { width: 90%; max-width: 1000px; margin: 50px auto }
+div.redpishi-com-table-pag {display: flex; flex-direction: row; align-items: center; justify-content: flex-end; margin-top: -8px;}
+div#search-div {width: 90%; max-width: 1000px; margin: 25px auto -13px auto;}
+input#tableSearch { width: 100%; height: 45px; padding: 10px; border: 1px solid #ccc; padding: 10px;}
+input#tableSearch::placeholder {  color: #464646;}
+@media only screen and (max-width: 700px) {
+    table.redpishi-com-table td {display: block; height: unset!important; }
+    tr.table-head td { height: unset!important;  }
+    tr.table-head { display: flex; flex-wrap: wrap; flex-direction: row; justify-content: space-between; background-color: #ed1c40;}
+    tr.table-head td:hover{
+        background-color: #ed1c40!important;
+    }    tr.table-head:hover{
+        background-color: #ed1c40!important;
+    }
+}
+</style>    
+';
+$const_js = <<< JS
+<script>
+class redPishiTable {
+    constructor(id, pagnum, search) {
+        this.search = search;
+        this.tableResult = "";
+        if ( document.querySelector("figure."+id) != null ) {
+            this.table = document.querySelector("figure."+id+" table");
+        } else { this.table = document.querySelector("."+id);}      
+        this.table.classList.add('redpishi-com-table');
+        this.table.setAttribute("cellspacing", "0");
+        this.pagEl = '<div class="'+id+' redpishi-com-table-pag"><a   class="btn_prev">&lt;</a><a   class="btn_next">&gt;</a>page: <span id="page"></span></div>';
+        this.table.insertAdjacentHTML("afterend", this.pagEl)
+        this.tableSearch = document.createElement("input");
+        this.tableSearch.type = "search";
+        this.tableSearch.id = "tableSearch";
+        this.tableSearch.placeholder = "Item to filter ...";
+        this.searchDiv = document.createElement("div");
+        this.searchDiv.id = "search-div";
+        this.searchDiv.appendChild(this.tableSearch);
+        this.table.before(this.searchDiv);
+        if (this.search == "off") {
+            this.searchDiv.style.display = "none";
+        }
+        this.tableHead = this.table.rows[0];
+        this.tableHead.classList.add("table-head");
+        this.tableBody = [...this.table.rows].slice(1,);
+        this.defultTable = this.tableHead.outerHTML + this.tableBody.map(e => e.outerHTML).join("");
+        this.tableSearch.addEventListener("keyup", this.searchTable.bind(this) );
+        this.tableSearch.addEventListener("click", this.searchTable.bind(this) );
+        this.btn_next = document.querySelector("."+id+" .btn_next");
+        this.btn_prev = document.querySelector("."+id+" .btn_prev");
+        this.btn_next.addEventListener("click", e => { if (this.current_page < this.numPages()) {
+            this.current_page++;
+            this.changePage(this.current_page);
+        } });
+        this.btn_prev.addEventListener("click", e => { if (this.current_page > 1) {
+        this.current_page--;
+        this.changePage(this.current_page);
+        } });
+        if (pagnum == "off") {
+            this.records_per_page = 10000;
+            document.querySelector("div." + id + ".redpishi-com-table-pag").style.display = "none";
+            
+        } else { this.records_per_page = pagnum; }      
+        this.l = this.table.rows.length
+        this.current_page = 1 
+        this.id = id;
+    }
+    searchTable (e) {     
+    if ( e.target.value.length > -1  ) {
+        this.tableResult = this.tableHead.outerHTML;   
+        this.table.innerHTML = ''
+        this.tableBody.forEach( tr => {            
+            if ( tr.innerText.toLowerCase().indexOf(e.target.value.toLowerCase()) >-1 ){               
+                this.tableResult += tr.outerHTML  }
+        })
+        this.table.innerHTML = this.tableResult  	
+        this.changePage(1)
+		this.current_page = 1	
+    } else { 
+        this.table.innerHTML = this.defultTable 
+        this.changePage(1)
+        this.current_page = 1
+         }} 
+numPages(){
+    if ( document.querySelector("figure."+this.id) != null ) {
+        this.l = document.querySelector("figure."+this.id+" table").rows.length;
+        } else {  this.l = document.querySelector("." + this.id).rows.length  }
+    return Math.ceil((this.l - 1) / this.records_per_page); }
+
+changePage(page){
+    if ( document.querySelector("figure."+this.id) != null ) {
+        this.listing_table = document.querySelector("figure."+this.id+" table");
+        } else {  this.listing_table = document.querySelector("."+this.id);  }  
+    this.page_span = document.querySelector("."+this.id+".redpishi-com-table-pag span#page");
+    if (page < 1) page = 1;
+    if (page > this.numPages()) page = this.numPages();
+    [...this.listing_table.getElementsByTagName('tr')].forEach((tr)=>{
+        tr.style.display='none'; 
+    });
+    this.listing_table.rows[0].style.display = ""; 
+    for (var i = (page-1) * this.records_per_page + 1; i < (page * this.records_per_page) + 1; i++) {
+        if (this.listing_table.rows[i]) {
+            this.listing_table.rows[i].style.display = ""
+        } else {continue;}
+    }    
+    this.page_span.innerHTML = page + "/" + this.numPages();
+    if (page == 1) {
+        this.btn_prev.style.visibility = "hidden";
+    } else {
+        this.btn_prev.style.visibility = "visible";
+    }
+    if (page == this.numPages()) {
+        this.btn_next.style.visibility = "hidden";
+    } else {
+        this.btn_next.style.visibility = "visible"; }    
+}
+}
+</script>
+JS;
+$red_table = '
+<script>
+document.addEventListener("DOMContentLoaded", (event) => {
+  new redPishiTable("'.$class.'", "'.$pagination.'", "'.$filter.'").changePage(1);
+
+})
+</script> ';
+if ( $redtable_first_call == 1 ){	
+	 $redtable_first_call++;
+	 return "{$const_style}{$const_js}{$red_table}"; } elseif  ( $redtable_first_call > 1 ) {	$redtable_first_call++;
+		return "{$red_table}"; }}
