@@ -1,0 +1,38 @@
+add_action( 'phpmailer_init', function ( $phpmailer ) {
+//*****************settings*********************//
+$Outgoing_Server = 'mail.yoursite.com';
+$Port = '25';
+$email = 'admin@yoursite.com';
+$password = '123456';
+$site_name = 'Redpishi';
+//*****************settings*********************//
+$phpmailer->isSMTP();
+$phpmailer->Host       = $Outgoing_Server;
+$phpmailer->Port       = $Port;
+$phpmailer->SMTPSecure = '';
+$phpmailer->SMTPAuth   = true;
+$phpmailer->Username   = $email;
+$phpmailer->Password   = $password;
+$phpmailer->From       = $email;
+$phpmailer->FromName   = $site_name;
+$phpmailer->addReplyTo($email, $site_name);
+$phpmailer->SMTPOptions = array(
+    'ssl' => array(
+        'verify_peer' => false,
+        'verify_peer_name' => false,
+        'allow_self_signed' => true
+    ));
+} );
+
+add_action('wp_mail_failed', function ( $wp_error ){
+	$timee = date("Y-m-d");	
+	$emaill = array(
+	"email_to" => $args["to"],
+	"email_subject" => $args["subject"],
+	"email_message" => $args["message"]
+	);
+    $fn = ABSPATH . '/mail.log'; // say you've got a mail.log file in your server root
+    $fp = fopen($fn, 'a');
+	fputs($fp, "Mailer Error: " . serialize($wp_error).  " email: " . $emaill[1] . "  time -> " . $timee . "\n");	
+    fclose($fp);
+}, 10, 1);
