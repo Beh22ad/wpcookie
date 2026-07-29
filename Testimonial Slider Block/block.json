@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "create-block/wpcookie-testimonial",
+	"version": "0.1.0",
+	"title": "WPCookie Testimonial",
+	"category": "text",
+	"icon": "testimonial",
+	"description": "Create testimonial slider.",
+	"example": {},
+	"supports": {
+		"html": false
+
+	},
+	"textdomain": "wpcookie-testimonial",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php",
+	"viewScript": ["file:./view.js", "file:./publice/swiffy-slider.min.js"]
+}

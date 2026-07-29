@@ -1,0 +1,18 @@
+.wpcookie-testimonial-wrapper > div > div {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    overflow-x: scroll;
+}
+.wpcookie-testimonial-wrapper figure {
+    display: flex!important;
+    flex-direction: column!important;
+    align-content: center!important;
+    align-items: center!important;
+}
+.wpcookie-testimonial-wrapper figcaption {
+    width: 200px!important;
+}
+div.my-custom-group {
+    max-width: 600px;
+}
