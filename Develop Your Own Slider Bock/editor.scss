@@ -1,0 +1,11 @@
+.wpcookie-image-slider-inner-container  {
+		display: flex;
+		flex-direction: row;
+		overflow-x: scroll;
+		margin: 1px;	
+}		
+
+.wpcookie-image-slider-inner-container img {
+	max-width: 210px;
+	object-fit: cover;
+}

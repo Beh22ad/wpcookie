@@ -1,0 +1,94 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wpcookie/wpcookie-image-slider",
+  "version": "0.1.0",
+  "title": "WPCoookie Image Slider",
+  "category": "media",
+  "attributes": {
+    "images": {
+      "type": "array",
+      "default": []
+    },
+    "autoPlay": {
+      "type": "boolean",
+      "default": true
+    },
+    "pauseOnHover": {
+      "type": "boolean",
+      "default": true
+    },
+    "showCaption": {
+      "type": "boolean",
+      "default": true
+    },
+    "imageSize": {
+      "type": "string",
+      "default": "full",
+      "enum": [
+        "thumbnail",
+        "medium",
+        "full"
+      ]
+    },
+    "layout": {
+      "type": "string",
+      "default": "slider-item-show slider-item-noga",
+      "enum": [
+        "slider-item-showe slider-item-nogap",
+        "slider-item-show2",
+        "slider-item-show3",
+        "slider-item-show4",
+        "slider-item-show5",
+        "slider-item-show6"
+      ]
+    },
+    "navigation": {
+      "type": "string",
+      "default": "slider-nav-visible",
+      "enum": [
+        "slider-nav-visible",
+        ""
+      ]
+    },
+    "indicators": {
+      "type": "string",
+      "default": "",
+      "enum": [
+        "",
+        "slider-indicators-outside"
+      ]
+    },
+    "theme": {
+      "type": "string",
+      "default": "",
+      "enum": [
+        "",
+        "slider-indicators-dark slider-nav-dark"
+      ]
+    },
+    "height": {
+      "type": "string",
+      "default": "100vh"
+    },
+    "align": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "icon": "images-alt",
+  "description": "Create slick looking image slider and carousel.",
+  "example": {},
+  "supports": {
+    "html": false
+  },
+  "textdomain": "wpcookie-image-slider",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php",
+  "viewScript": [
+    "file:./view.js",
+    "file:./assets/swiffy-slider.min.js"
+  ]
+}
